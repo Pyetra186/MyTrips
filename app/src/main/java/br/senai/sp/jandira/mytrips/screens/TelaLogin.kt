@@ -26,7 +26,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,10 +39,11 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import br.senai.sp.jandira.mytrips.ui.theme.MyTripsTheme
 
 @Composable
-fun TelaLogin(){
+fun TelaLogin(controleNavegacao: NavHostController) {
     MyTripsTheme {
 
         var emailState = remember {
@@ -158,12 +158,15 @@ fun TelaLogin(){
             Spacer(modifier = Modifier .padding(20.dp))
 
             Button(onClick = {
-                
-                Toast.makeText(
-                    emailContext,
-                    "email logado com sucesso!!",
-                    Toast.LENGTH_LONG)
-                    .show()
+               if (emailState.value == "pietra@gmail.com" && senhaState.value == "123"){
+                   controleNavegacao.navigate("home")
+               }else{
+                   Toast.makeText(
+                       emailContext,
+                       "ERRO! email ou senha inválidos",
+                       Toast.LENGTH_LONG)
+                       .show()
+               }
             },
                 modifier = Modifier
                     .size(134.dp, 48.dp)
@@ -199,12 +202,24 @@ fun TelaLogin(){
                     text = "Don’t have an account?  ",
                     color = Color(0xFFA09C9C)
                 )
-                Text(
-                    modifier = Modifier.padding(end = 25.dp),
-                    text = "Sign up",
-                    color = Color(0xFFCF06F0),
-                    fontWeight = FontWeight.Bold
+                Button(
+                    onClick = {
+                        controleNavegacao.navigate("cadastro") },
+                    modifier = Modifier
+                       ,
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.White),
+
                 )
+                {
+                    Text(
+                        modifier = Modifier.padding(end = 25.dp),
+                        text = "Sign up",
+                        color = Color(0xFFCF06F0),
+                        fontWeight = FontWeight.Bold,
+
+                    )
+                }
+
 
             }
             Spacer(modifier = Modifier.height(50.dp))
@@ -215,7 +230,8 @@ fun TelaLogin(){
                     .offset(y = 75.dp)
                     .background(
                         Color(0xFFCF06F0),
-                        shape = RoundedCornerShape(topEnd = 30.dp))
+                        shape = RoundedCornerShape(topEnd = 30.dp)
+                    )
                     .padding(top = 90.dp)
             ){
 
@@ -235,6 +251,7 @@ fun Spacer(modifier: Modifier) {
 @Composable
 fun TelaLoginPreview() {
     MyTripsTheme {
-        TelaLogin()
+
+        //TelaLogin
     }
 }
