@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -38,7 +39,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -48,7 +51,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import br.senai.sp.jandira.mytrips.R
+import br.senai.sp.jandira.mytrips.repository.tripsRepository
 import br.senai.sp.jandira.mytrips.ui.theme.MyTripsTheme
+
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -58,14 +64,16 @@ fun TelaHome() {
         mutableStateOf("")
     }
 
+    val viagens = tripsRepository().listarTodasAsViagens(LocalContext.current)
+    val categorias = tripsRepository().listarTodasCategorias(LocalContext.current)
+
 
 
     MyTripsTheme {
-
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(184.dp),
+                    .height(50.dp),
                 shape = RectangleShape
             ) {
 
@@ -73,14 +81,14 @@ fun TelaHome() {
                     Image(
                         painter = painterResource(id = R.drawable.backgroud),
                         contentDescription = "",
-                        contentScale = ContentScale.FillBounds,
-                        modifier = Modifier.fillMaxSize()
+
+
                     )
 
 
                     Column(
                         modifier = Modifier
-                            .padding(start = 18.dp, end = 16.dp, top = 12.dp, bottom = 8.dp),
+                            .padding(start = 18.dp, end = 16.dp, top = 12.dp, bottom = 5.dp),
 
                         ) {
                         Column(
@@ -105,8 +113,9 @@ fun TelaHome() {
                             )
                         }
                         Column(
-                            modifier = Modifier.fillMaxHeight(),
-                            verticalArrangement = Arrangement.Bottom
+                            modifier = Modifier.fillMaxHeight()
+                                .padding(bottom = 12.dp),
+
                         ) {
                             Row(modifier = Modifier) {
                                 Icon(
@@ -132,8 +141,9 @@ fun TelaHome() {
                                 fontSize = 25.sp,
                                 letterSpacing = -1.sp,
                                 modifier = Modifier
-                                    .height(32.dp)
-                                    .padding(start = 2.dp),
+
+
+
                             )
 
                         }
@@ -141,179 +151,162 @@ fun TelaHome() {
                 }
 
             }
+ Column {
 
-        Column (
+    Column (
+        modifier = Modifier
+
+    ){
+        Text(
+            text = "Categories",
+            textAlign = TextAlign.Start,
+            color = Color.Gray,
+            modifier = Modifier.padding(top = 210.dp, start = 16.dp),
+        )
+
+        Spacer(modifier = Modifier.height(20.dp))
+        LazyRow() {
+            items(categorias){
+                Card (
+                    modifier = Modifier
+                        .size(120.dp)
+                        .padding(end = 8.dp, start = 10.dp, top = 15.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color(0xffCF06F0)),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 10.dp)
+                ){
+                    Column (
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                        modifier = Modifier.fillMaxSize()
+                    ){
+
+                        Image(
+                            painter = if(it.img == null) painterResource(id = R.drawable.no_img) else it.img!!,
+                            contentDescription = "")
+                        Text(
+                            text = it.nome,
+                            color = Color.White,
+                            fontSize = 14.sp
+                        )
+
+                    }
+
+                }
+            }
+        }
+    }
+
+    Column {
+        SearchBar(
+            query = searchState.value,
+            onQueryChange = {
+                searchState.value = it
+            },
+            onSearch = {},
+            active = false,
+            onActiveChange = {},
+            colors = SearchBarDefaults.colors(containerColor = Color(0xFFDEDCDF)),
+            shape = RoundedCornerShape(15.dp),
+            trailingIcon = {
+                Icon(Icons.Outlined.Search, contentDescription = "", tint = Color.Gray)
+            },
+            placeholder = {
+                Text(text = "Search your destiny...",
+                    color = Color.Gray,
+                    fontSize = 14.sp
+                )
+            },
             modifier = Modifier
-                .fillMaxSize()
-        ){
-            Text(
-                text = "Categories",
-                textAlign = TextAlign.Start,
-                color = Color.Gray,
-                modifier = Modifier.padding(top = 195.dp, start = 16.dp),
-            )
-
-            Spacer(modifier = Modifier.height(20.dp))
-            LazyRow() {
-                items(4){
-                    Card (
-                        modifier = Modifier
-                            .size(120.dp)
-                            .padding(end = 8.dp, start = 10.dp, top = 15.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color(0xffCF06F0)),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 10.dp)
-                    ){
-                        Column (
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center,
-                            modifier = Modifier.fillMaxSize()
-                        ){
-
-                            Image(
-                                painter = painterResource(id =  R.drawable.montanha) ,
-                                contentDescription = "")
-                            Text(
-                                text = "Montain",
-                                color = Color.White,
-                                fontSize = 14.sp
-                            )
-
-                        }
-
-                    }
-
-                    Card (
-                        modifier = Modifier
-                            .size(120.dp)
-                            .padding(end = 8.dp, start = 10.dp, top = 15.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color(0xffCF06F0)),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 10.dp)
-                    ){
-                        Column (
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center,
-                            modifier = Modifier.fillMaxSize()
-                        ){
-
-                            Image(
-                                painter = painterResource(id =  R.drawable.snow) ,
-                                contentDescription = "")
-                            Text(
-                                text = "Snow",
-                                color = Color.White,
-                                fontSize = 14.sp
-                            )
-
-                        }
-
-                    }
-
-                    Card (
-                        modifier = Modifier
-                            .size(120.dp)
-                            .padding(end = 8.dp, start = 10.dp, top = 15.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color(0xffCF06F0)),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 10.dp)
-                    ){
-                        Column (
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center,
-                            modifier = Modifier.fillMaxSize()
-                        ){
-
-                            Image(
-                                painter = painterResource(id =  R.drawable.praia) ,
-                                contentDescription = "")
-                            Text(
-                                text = "Beach",
-                                color = Color.White,
-                                fontSize = 14.sp
-                            )
-
-                        }
-
-                    }
-
-
-
-                }
-            }
-        }
-
-        Column {
-            Spacer(modifier = Modifier.height(16.dp))
-
-            SearchBar(
-                query = searchState.value,
-                onQueryChange = {
-                    searchState.value = it
-                },
-                onSearch = {},
-                active = false,
-                onActiveChange = {},
-                colors = SearchBarDefaults.colors(containerColor = Color(0xFFDEDCDF)),
-                shape = RoundedCornerShape(15.dp),
-                trailingIcon = {
-                    Icon(Icons.Outlined.Search, contentDescription = "", tint = Color.Gray)
-                },
-                placeholder = {
-                    Text(text = "Search your destiny...",
-                        color = Color.Gray,
-                        fontSize = 14.sp
-                    )
-                },
-                modifier = Modifier
-                    .padding(start = 16.dp, top = 350.dp)
-                    .height(50.dp),
+                .padding(start = 16.dp, top = 10.dp)
+                .height(50.dp),
 
             )
-            {}
-        }
-        Column {
-            LazyColumn(){
-                items(3){
-                    Column (modifier = Modifier.fillMaxWidth(),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                        ){
-                        Card (modifier = Modifier
-                            .size(350.dp, 230.dp)
-                            .padding(vertical = 8.dp),
-                            colors = CardDefaults.cardColors(Color(0xFFDEDCDF)),
-                            elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
-                            shape = RoundedCornerShape(8.dp),
-                            border = BorderStroke(1.dp, color = Color.White)
-                           ){
-                            Column (modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally
+        {}
+    }
+    Column {
+        LazyColumn(){
+            items(viagens){
+                Column (modifier = Modifier
+                    .fillMaxWidth()
+                    ,
+                    horizontalAlignment = Alignment.CenterHorizontally
 
+                ){
+                    Card (modifier = Modifier
+                        .size(350.dp, 230.dp)
+                        .padding(vertical = 8.dp)
+                        ,
+                        colors = CardDefaults.cardColors(Color(0xFFDEDCDF)),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
+                        shape = RoundedCornerShape(8.dp),
+                        border = BorderStroke(1.dp, color = Color.White)
+                    ){
+                        Column (modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+
+                        ){
+
+                            Card (modifier = Modifier
+                                .height(106.dp)
+                                .width(330.dp)
                             ){
 
-                                Card (modifier = Modifier
-                                    .height(106.dp)
-                                    .width(330.dp)
-                                ){
-
-                                    Image(
-                                        painter = painterResource(id = R.drawable.londres),
-                                        contentDescription = "",
-                                        contentScale = ContentScale.Crop
-                                    )
-                                }
-
-
+                                Image(
+                                    painter = if(it.imagem == null) painterResource(id = R.drawable.no_img) else it.imagem!!,
+                                    contentDescription = "",
+                                    contentScale = ContentScale.Crop
+                                )
                             }
 
+                            Spacer(modifier = Modifier.height(5.dp))
+                            Column (modifier = Modifier.fillMaxWidth(),
+                                horizontalAlignment = Alignment.Start
+                            ) {
+
+                                Text(text = it.destino,
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight(400),
+                                    color = Color(0xffCF06F0)
+                                )
+
+                                Text(text = it.descricao,
+                                    fontSize = 12.sp,
+                                    lineHeight = 15.sp,
+                                    modifier = Modifier.padding(top = 6.dp)
+
+                                )
+                            }
+
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Row (
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.End
+                            ){
+
+                                Text(text = "18 Feb - 21 - Feb",
+                                    color = Color(0xffCF06F0),
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight(400),
+                                    modifier = Modifier.padding(top = 18.dp)
+
+                                )
+                            }
                         }
 
                     }
                 }
             }
         }
+    }
+        }
+
+
 
         }
     }
+
 
 
 
