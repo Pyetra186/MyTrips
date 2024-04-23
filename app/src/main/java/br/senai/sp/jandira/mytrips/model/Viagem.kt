@@ -12,8 +12,4 @@ data class Viagem(
     var imagem: Painter? = null
 )
 
-data class Categories(
-    var  id: Int = 0,
-    var nome: String = " ",
-    var img: Painter? = null
-)
+

@@ -51,6 +51,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import br.senai.sp.jandira.mytrips.R
+import br.senai.sp.jandira.mytrips.repository.CategoriasRepository
 import br.senai.sp.jandira.mytrips.repository.tripsRepository
 import br.senai.sp.jandira.mytrips.ui.theme.MyTripsTheme
 
@@ -65,7 +66,7 @@ fun TelaHome() {
     }
 
     val viagens = tripsRepository().listarTodasAsViagens(LocalContext.current)
-    val categorias = tripsRepository().listarTodasCategorias(LocalContext.current)
+    val categorias = CategoriasRepository().listarTodasCategorias(LocalContext.current)
 
 
 
@@ -113,7 +114,8 @@ fun TelaHome() {
                             )
                         }
                         Column(
-                            modifier = Modifier.fillMaxHeight()
+                            modifier = Modifier
+                                .fillMaxHeight()
                                 .padding(bottom = 12.dp),
 
                         ) {
