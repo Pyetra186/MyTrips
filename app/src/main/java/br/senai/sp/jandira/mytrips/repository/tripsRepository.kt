@@ -5,7 +5,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
 import br.senai.sp.jandira.mytrips.R
 import br.senai.sp.jandira.mytrips.model.Categorias
-import br.senai.sp.jandira.mytrips.model.Categories
 import br.senai.sp.jandira.mytrips.model.Viagem
 import java.time.LocalDate
 

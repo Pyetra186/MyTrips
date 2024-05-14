@@ -1,5 +1,6 @@
 package br.senai.sp.jandira.mytrips
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -18,6 +19,7 @@ import br.senai.sp.jandira.mytrips.screens.TelaLogin
 import br.senai.sp.jandira.mytrips.ui.theme.MyTripsTheme
 
 class MainActivity : ComponentActivity() {
+    @SuppressLint("SuspiciousIndentation")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -34,7 +36,7 @@ class MainActivity : ComponentActivity() {
                         startDestination = "login"
                     ){
                        composable(route = "login"){ TelaLogin(controleNavegacao)}
-                       composable(route = "cadastro"){ TelaCadastro(controleNavegacao)}
+                       composable(route = "Cadastro"){ TelaCadastro(controleNavegacao)}
                       composable(route = "home"){ TelaHome() }
                     }
 

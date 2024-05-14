@@ -38,6 +38,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -45,11 +46,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import br.senai.sp.jandira.mytrips.model.cadastro
+import br.senai.sp.jandira.mytrips.repository.CadastroRepository
 
 import br.senai.sp.jandira.mytrips.ui.theme.MyTripsTheme
 
+fun Checkbox(checked: Boolean) {
+
+}
+
 @Composable
 fun TelaCadastro(controleNavegacao: NavHostController) {
+
+    val cr = CadastroRepository(LocalContext.current)
 
     var usernameState = remember {
         mutableStateOf("")
@@ -65,6 +74,10 @@ fun TelaCadastro(controleNavegacao: NavHostController) {
 
     var passawordState = remember{
         mutableStateOf("")
+    }
+
+    var overState = remember {
+        mutableStateOf(false)
     }
 
     MyTripsTheme {
@@ -279,11 +292,9 @@ fun TelaCadastro(controleNavegacao: NavHostController) {
 
             ) {
                 Checkbox(
-                    checked = true,
-                    onCheckedChange = {  },
-                    colors = CheckboxDefaults.colors(Color(0xFFCF06F0))
-                )
-
+                    checked = overState.value,
+                    onCheckedChange = {overState.value = it},
+                    colors = CheckboxDefaults.colors(Color(0xFFCF06F0)))
                 Text(
                     text = "Over 18?",
                 )
@@ -291,7 +302,20 @@ fun TelaCadastro(controleNavegacao: NavHostController) {
             Spacer(modifier = Modifier.height(13.dp))
             Button(
                 onClick = {
-                          controleNavegacao.navigate("login")
+                    var cadastrar = cadastro (
+                        nome = usernameState.value,
+                        telefone = phoneState.value,
+                        email = emailState.value,
+                        senha = passawordState.value,
+                        maiorIdade = overState.value,
+                    )
+
+                    if (usernameState.value == " " ){
+                    }else {
+                        cr.salvar(cadastro = cadastrar)
+                        controleNavegacao.navigate("login")
+                    }
+
                 },
                 colors = ButtonDefaults
                     .buttonColors(Color(0xFFCF06F0)),

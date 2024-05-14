@@ -40,11 +40,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import androidx.room.Database
+import br.senai.sp.jandira.mytrips.repository.CadastroRepository
 import br.senai.sp.jandira.mytrips.ui.theme.MyTripsTheme
 
 @Composable
 fun TelaLogin(controleNavegacao: NavHostController) {
     MyTripsTheme {
+
+        val cr = CadastroRepository(LocalContext.current)
 
         var emailState = remember {
             mutableStateOf("")
@@ -158,14 +162,18 @@ fun TelaLogin(controleNavegacao: NavHostController) {
             Spacer(modifier = Modifier .padding(20.dp))
 
             Button(onClick = {
-               if (emailState.value == "pietra@gmail.com" && senhaState.value == "123"){
-                   controleNavegacao.navigate("home")
-               }else{
-                   Toast.makeText(
-                       emailContext,
-                       "ERRO! email ou senha inválidos",
-                       Toast.LENGTH_LONG)
-                       .show()
+                if (emailState.value.isNotEmpty() && senhaState.value.isNotEmpty()) {
+                    val user = cr.login(emailState.value, senhaState.value)
+                    if (user != null) {
+                        controleNavegacao.navigate("home")
+                    } else {
+                        Toast.makeText(
+                            emailContext,
+                            "ERRO! email ou senha inválidos",
+                            Toast.LENGTH_LONG
+                        )
+                            .show()
+                    }
                }
             },
                 modifier = Modifier
@@ -204,7 +212,7 @@ fun TelaLogin(controleNavegacao: NavHostController) {
                 )
                 Button(
                     onClick = {
-                        controleNavegacao.navigate("cadastro") },
+                        controleNavegacao.navigate("Cadastro") },
                     modifier = Modifier
                        ,
                     colors = ButtonDefaults.buttonColors(containerColor = Color.White),
